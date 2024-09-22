@@ -4,3 +4,10 @@ development:
       uri: mongodb://root:toor@db:27017/quiz_builder_db?authSource=admin
       options:
         server_selection_timeout: 5
+
+test:
+  clients:
+    default:
+      uri: mongodb://root:toor@db:27017/quiz_builder_db_test?authSource=admin
+      options:
+        server_selection_timeout: 5
