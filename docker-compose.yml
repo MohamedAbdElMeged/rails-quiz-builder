@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: mongo:latest   # You can specify a version like mongo:6.0
+    container_name: db
+    ports:
+      - "27017:27017"  # Exposing the MongoDB port
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: toor
+    volumes:
+      - mongo-data:/data/db  # Persistent data storage
+
+  web:
+    build: .
+    command: bash -c "entrypoint.sh && bash init.sh"
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    env_file:
+    - .env
+
+volumes:
+ mongo-data:
