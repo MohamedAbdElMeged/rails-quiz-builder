@@ -1,9 +1,9 @@
 ## Rails Quiz Builder 
 
 ### Tech Stack 
-Ruby
-Ruby on Rails
-Mongodb
-Docker
-Docker compose
+- Ruby
+- Ruby on Rails
+- Mongodb
+- Docker
+- Docker compose
 
