@@ -1,14 +1,32 @@
-class Api::V1::UsersController < ApplicationController
-  def sign_up
-    user = User.new(user_params)
-    if user.save!
-      render json: user, status: :created
-    else
-      render json: user.errors.full_messages, status: :unprocessable_entity
+# frozen_string_literal: true
+
+module Api
+  module V1
+    class UsersController < ApplicationController
+      def sign_up
+        user = User.new(user_params)
+        if user.save
+          user.token = JwtHelper.encode(user.user_data)
+          render json: user, status: :created, serializer: Api::V1::UserSerializer
+        else
+          render json: user.errors.full_messages, status: :unprocessable_entity
+        end
+      end
+
+      def sign_in
+        user = User.find_by(email: params[:email])
+        unless user&.authenticate(params[:password])
+          return render json: { error: 'Invalid email or password' },
+                        status: :unauthorized
+        end
+
+        user.token = JwtHelper.encode(user.user_data)
+        render json: user, status: :ok, serializer: Api::V1::UserSerializer
+      end
+
+      def user_params
+        params.require(:user).permit(:email, :password, :password_confirmation)
+      end
     end
   end
-  def user_params
-    params.require(:user).permit(:email,:password, :password_confirmation)
-  end
-  
 end
