@@ -4,6 +4,9 @@ development:
       uri: mongodb://root:toor@db:27017/quiz_builder_db?authSource=admin
       options:
         server_selection_timeout: 5
+  options:
+    raise_not_found_error: false
+
 
 test:
   clients:
@@ -11,3 +14,5 @@ test:
       uri: mongodb://root:toor@db:27017/quiz_builder_db_test?authSource=admin
       options:
         server_selection_timeout: 5
+  options:
+    raise_not_found_error: false

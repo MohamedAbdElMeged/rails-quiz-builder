@@ -5,6 +5,7 @@ FactoryBot.define do
     title { Faker::Marketing.buzzwords }
     total_score { [10.0, 20.0].sample }
     published { [true, false].sample }
+    created_at { DateTime.current }
     association :creator, factory: :user
     transient do
       questions_count { (1...10).to_a.sample }

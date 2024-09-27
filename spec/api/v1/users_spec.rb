@@ -77,5 +77,29 @@ RSpec.describe Api::V1::UsersController, type: :request do
       end
     end
   end
+
+  describe 'GET /profile' do
+    context 'with valid token' do
+      before do
+        user = create(:user)
+        token = JwtHelper.encode(user.user_data)
+        get '/api/v1/users/profile', headers: {
+          Authorization: "Bearer #{token}"
+        }
+      end
+      it 'should return user data' do
+        expect(response.status).to eq(200)
+        expect(json.keys).to eq(%w[id email token])
+      end
+    end
+    context 'with no token' do
+      before do
+        get '/api/v1/users/profile'
+      end
+      it 'should return unauthorized' do
+        expect(response.status).to eq(401)
+      end
+    end
+  end
 end
 # rubocop:enable Metrics/BlockLength

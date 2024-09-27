@@ -10,4 +10,9 @@ class Question
 
   validates :question_type, inclusion: { in: QUESTION_TYPES }
   embedded_in :quiz
+  embeds_many :answer_choices
+  validate :question_has_only_one_correct_answer_if_single_answer, if: -> { question_type == 'single_answer' }
+  def question_has_only_one_correct_answer_if_single_answer
+    answer_choices.select { |answer_choice| answer_choice.correct == true }.size == 1
+  end
 end

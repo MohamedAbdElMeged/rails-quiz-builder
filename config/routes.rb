@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       post '/users/sign_up', to: 'users#sign_up'
       post '/users/sign_in', to: 'users#sign_in'
+      get '/users/profile', to: 'users#profile'
     end
   end
 end
