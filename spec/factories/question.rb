@@ -11,9 +11,9 @@ FactoryBot.define do
         question.answer_choices.push(FactoryBot.build(:answer_choice, title: 'yes', correct: true))
       else
         answer_choices_size = (2..3).to_a.sample
-        answer_choices_size.times{
+        answer_choices_size.times do
           question.answer_choices.push(FactoryBot.build(:answer_choice, title: Faker::Lorem.word, correct: false))
-        }
+        end
         question.answer_choices.push(FactoryBot.build(:answer_choice, title: Faker::Lorem.word, correct: true))
         question.answer_choices.push(FactoryBot.build(:answer_choice, title: Faker::Lorem.word, correct: true))
       end

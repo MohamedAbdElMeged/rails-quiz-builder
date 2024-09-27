@@ -8,4 +8,7 @@ RSpec.describe Quiz, type: :model do
   it 'question count should be between 1 or 10' do
     expect((1..10).to_a).to include(quiz.questions.size)
   end
+  it 'should created by user' do
+    expect(quiz.creator.id).to eq(user.id)
+  end
 end

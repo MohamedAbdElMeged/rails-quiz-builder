@@ -13,7 +13,7 @@ class User
 
   validates_presence_of :email
   validates_uniqueness_of :email
-  validates :email, presence: true, format: { with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i}, uniqueness: true
+  validates :email, presence: true, format: { with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i }, uniqueness: true
 
   has_many :quizzes, class_name: 'Quiz', foreign_key: 'created_by', dependent: :destroy
 
