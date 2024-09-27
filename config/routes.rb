@@ -10,7 +10,7 @@ Rails.application.routes.draw do
       post '/users/sign_up', to: 'users#sign_up'
       post '/users/sign_in', to: 'users#sign_in'
       get '/users/profile', to: 'users#profile'
-      resources :quizzes, only: [:index]
+      resources :quizzes, only: %i[index show]
     end
   end
 end
