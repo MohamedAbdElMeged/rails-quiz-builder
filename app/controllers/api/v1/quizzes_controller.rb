@@ -29,7 +29,7 @@ module Api
       end
       private
       def quiz_params
-        params.require(:quiz).permit(:title, :total_score ,  questions: [:title , :question_type, { answer_choices: [ :title, :correct] }])
+        params.require(:quiz).permit(:title ,  questions: [:title , :question_type, { answer_choices: [ :title, :correct] }])
       end
       
       def set_quiz

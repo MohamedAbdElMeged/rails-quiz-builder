@@ -3,7 +3,6 @@
 FactoryBot.define do
   factory :quiz do
     title { Faker::Marketing.buzzwords }
-    total_score { [10.0, 20.0].sample }
     published { [true, false].sample }
     created_at { DateTime.current }
     association :creator, factory: :user
