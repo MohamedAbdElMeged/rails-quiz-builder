@@ -218,5 +218,38 @@ RSpec.describe Api::V1::QuizzesController, type: :request do
       end
     end
   end
+  describe 'DELETE /quizzes/:id' do
+    context "when user isn't logged in" do
+      before do
+        delete "/api/v1/quizzes/#{unpublished_quiz.id}"
+      end
+      it 'should return unauthorized' do
+        expect(response.status).to eq(401)
+      end
+    end
+    context "when user isn't creator" do
+      before do
+        user2 = create(:user, email: 'user2@user.com')
+        token = JwtHelper.encode(user2.user_data)
+        delete "/api/v1/quizzes/#{published_quiz.id}", headers: {
+          Authorization: "Bearer #{token}"
+        }
+      end
+      it 'should return forbidden' do
+        expect(response.status).to eq(403)
+      end
+    end
+    context 'when user is created' do
+      before do
+        token = JwtHelper.encode(user.user_data)
+        delete "/api/v1/quizzes/#{published_quiz.id}", headers: {
+          Authorization: "Bearer #{token}"
+        }
+      end
+      it 'should delete successfully' do
+        expect(response.status).to eq(200)
+      end
+    end
+  end
 end
 # rubocop:enable Metrics/BlockLength

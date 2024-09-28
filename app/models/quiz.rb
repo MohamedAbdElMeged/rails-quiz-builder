@@ -18,7 +18,7 @@ class Quiz
   end
 
   def published_quiz
-    errors.add(:published, 'Quiz can\'t be updated') if published
+    errors.add(:published, 'Quiz can\'t be updated') if published_was
   end
 
   def total_score
