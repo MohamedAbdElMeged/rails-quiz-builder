@@ -51,5 +51,83 @@ RSpec.describe Api::V1::QuizzesController, type: :request do
       end
     end
   end
+  describe "PATCH /quizzes/id" do
+    context "when creator and not published" do
+      before do 
+        token = JwtHelper.encode(user.user_data)
+        patch "/api/v1/quizzes/#{unpublished_quiz.id}", params: {
+          quiz: {
+            title: "Test Updated"
+          }
+        }, headers: {
+          'Authorization': "Bearer #{token}"
+        }
+      end
+      it "should update successfully" do
+        expect(response.status).to eq(200)
+        expect(json['title']).to eq('Test Updated')
+      end
+    end
+    context "when creator and published" do
+      before do 
+        token = JwtHelper.encode(user.user_data)
+        patch "/api/v1/quizzes/#{published_quiz.id}", params: {
+          quiz: {
+            title: "Test Updated"
+          }
+        }, headers: {
+          'Authorization': "Bearer #{token}"
+        }
+      end
+      it "shouldn't update and return error" do
+        expect(response.status).to eq(422)
+        expect(json['error']).to eq('Quiz is published and can\'t be updated')
+      end
+    end
+    context "when not creator" do
+      before do 
+        user_2 = create(:user,email: "abbas@abbas.com")
+        token = JwtHelper.encode(user_2.user_data)
+        patch "/api/v1/quizzes/#{unpublished_quiz.id}", params: {
+          quiz: {
+            title: "Test Updated"
+          }
+        }, headers: {
+          'Authorization': "Bearer #{token}"
+        }
+      end
+      it "shouldn't update and return error" do
+        expect(response.status).to eq(403)
+        expect(json['error']).to eq('Can\'t edit other quizzes')
+      end
+    end
+    context "when not logged in" do
+      before do 
+        patch "/api/v1/quizzes/#{unpublished_quiz.id}", params: {
+          title: "Test Updated"
+        }
+      end
+      it "shouldn't update and return unauthorized" do
+        expect(response.status).to eq(401)
+      end
+    end
+    context "when quiz not found" do
+      before do 
+        token = JwtHelper.encode(user.user_data)
+        patch "/api/v1/quizzes/#{unpublished_quiz.id}232532525223232", params: {
+          title: "Test Updated"
+        },
+        headers: {
+          "Authorization": "Beared #{token}"
+        }
+      end
+      it "shouldn't update and return unauthorized" do
+        expect(response.status).to eq(404)
+        expect(json["error"]).to eq("Quiz not found")
+
+      end
+    end
+  end
+  
 end
 # rubocop:enable Metrics/BlockLength
