@@ -98,7 +98,7 @@ RSpec.describe Api::V1::QuizzesController, type: :request do
       end
       it "shouldn't update and return error" do
         expect(response.status).to eq(403)
-        expect(json['error']).to eq('Can\'t edit other quizzes')
+        expect(json['error']).to eq('Can\'t view other quizzes')
       end
     end
     context 'when not logged in' do
@@ -248,6 +248,53 @@ RSpec.describe Api::V1::QuizzesController, type: :request do
       end
       it 'should delete successfully' do
         expect(response.status).to eq(200)
+      end
+    end
+  end
+  describe 'GET /my_quizzes' do
+    context 'when quiz id is not sent ' do
+      before do
+        token = JwtHelper.encode(user.user_data)
+        get '/api/v1/quizzes/my_quizzes', headers: {
+          Authorization: "Bearer #{token}"
+        }
+      end
+
+      it 'return all creator quizzes' do
+        expect(response.status).to eq(200)
+        expect(json.size).to eq(user.quizzes.size)
+      end
+    end
+  end
+  describe 'GET /my_quizzes/:id' do
+    context "when quiz id is sent and it's his quiz" do
+      before do
+        token = JwtHelper.encode(user.user_data)
+        get '/api/v1/quizzes/my_quiz/', params: {
+          id: published_quiz.id
+        }, headers: {
+          Authorization: "Bearer #{token}"
+        }
+      end
+
+      it 'return the quiz' do
+        expect(response.status).to eq(200)
+        expect(json['title']).to eq(published_quiz.title)
+      end
+    end
+    context "when quiz id is sent and it's NOT his quiz" do
+      before do
+        user2 = create(:user, email: 'hamada@hamada.com')
+        token = JwtHelper.encode(user2.user_data)
+        get '/api/v1/quizzes/my_quiz/', params: {
+          id: published_quiz.id
+        }, headers: {
+          Authorization: "Bearer #{token}"
+        }
+      end
+
+      it "shouldn't return the quiz" do
+        expect(response.status).to eq(403)
       end
     end
   end

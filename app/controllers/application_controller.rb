@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
-  def authorize_request
+  def authenticate_request
     return head(:unauthorized) unless auth_header
 
     decoded_hash = JwtHelper.decode(auth_token)

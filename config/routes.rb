@@ -10,7 +10,10 @@ Rails.application.routes.draw do
       post '/users/sign_up', to: 'users#sign_up'
       post '/users/sign_in', to: 'users#sign_in'
       get '/users/profile', to: 'users#profile'
-      resources :quizzes
+      resources :quizzes do
+        get 'my_quizzes', on: :collection
+        get 'my_quiz', on: :collection
+      end
     end
   end
 end

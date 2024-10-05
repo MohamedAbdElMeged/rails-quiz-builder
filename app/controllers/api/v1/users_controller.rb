@@ -3,7 +3,7 @@
 module Api
   module V1
     class UsersController < ApplicationController
-      before_action :authorize_request, only: [:profile]
+      before_action :authenticate_request, only: [:profile]
       def sign_up
         user = User.new(user_params)
         if user.save

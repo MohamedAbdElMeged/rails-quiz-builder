@@ -3,9 +3,9 @@
 module Api
   module V1
     class QuizzesController < ApplicationController
-      before_action :authorize_request, only: %i[update create destroy]
-      before_action :set_quiz, only: %i[update destroy]
-      before_action :validate_creator, only: %i[update destroy]
+      before_action :authenticate_request, only: %i[update create destroy my_quizzes my_quiz]
+      before_action :set_quiz, only: %i[update destroy my_quiz]
+      before_action :validate_creator, only: %i[update destroy my_quiz]
 
       def index
         quizzes = Quiz.published_quizzes
@@ -15,7 +15,7 @@ module Api
       def show
         quiz = Quiz.published_quizzes.find_by(id: params[:id])
         if quiz
-          render json: quiz, serializer: Api::V1::QuizSerializer, status: :ok
+          render json: quiz, serializer: Api::V1::QuizSerializer, current_user: @current_user, status: :ok
         else
           render json: { error: 'Quiz not found' }, status: :not_found
         end
@@ -43,6 +43,15 @@ module Api
         render json: @quiz, serializer: QuizSerializer, status: :ok
       end
 
+      def my_quizzes
+        quizzes = @current_user.quizzes
+        render json: quizzes, each_serializer: Api::V1::QuizSerializer, status: :ok, current_user: @current_user
+      end
+
+      def my_quiz
+        render json: @quiz, serializer: Api::V1::QuizSerializer, status: :ok, current_user: @current_user
+      end
+
       private
 
       def quiz_params
@@ -57,9 +66,9 @@ module Api
       end
 
       def validate_creator
-        return if @quiz.creator == @current_user
+        return true if @quiz.creator == @current_user
 
-        render json: { error: "Can't edit other quizzes" },
+        render json: { error: "Can't view other quizzes" },
                status: :forbidden
       end
     end
