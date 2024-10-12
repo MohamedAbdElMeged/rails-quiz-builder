@@ -13,6 +13,7 @@ services:
       - mongo-data:/data/db  # Persistent data storage
 
   web:
+    container_name: quiz_web
     build: .
     command: bash -c "entrypoint.sh && bash init.sh"
     stdin_open: true
