@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :quizzes do
         get 'my_quizzes', on: :collection
         get 'my_quiz', on: :collection
+        post 'submit', on: :member
       end
     end
   end

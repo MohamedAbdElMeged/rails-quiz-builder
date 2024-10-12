@@ -15,4 +15,11 @@ class Question
   def question_has_only_one_correct_answer_if_single_answer
     answer_choices.select { |answer_choice| answer_choice.correct == true }.size == 1
   end
+  def correctness_weight
+    1.0 / answer_choices.select{ |answer_choice| answer_choice.correct == true }.size
+  end
+  def incorrectness_weight
+    1.0 / answer_choices.select{ |answer_choice| answer_choice.correct == false }.size
+  end
+  
 end

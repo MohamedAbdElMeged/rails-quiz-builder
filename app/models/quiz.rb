@@ -6,6 +6,7 @@ class Quiz
   field :title, type: String
 
   field :published, type: Mongoid::Boolean, default: false
+  has_many :quiz_answers
   belongs_to :creator, class_name: 'User', foreign_key: 'created_by'
   embeds_many :questions
   validate :number_of_questions_in_quiz

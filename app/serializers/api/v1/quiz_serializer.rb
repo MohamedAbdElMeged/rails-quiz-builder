@@ -5,9 +5,9 @@ module Api
     class QuizSerializer < ActiveModel::Serializer
       attributes :id, :title, :published, :total_score
       has_one :creator
-      attribute :_questions
+      attribute :questions
 
-      def _questions
+      def questions
         object.questions.map do |question|
           {
             id: question.id,

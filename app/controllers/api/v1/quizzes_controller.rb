@@ -3,8 +3,8 @@
 module Api
   module V1
     class QuizzesController < ApplicationController
-      before_action :authenticate_request, only: %i[update create destroy my_quizzes my_quiz]
-      before_action :set_quiz, only: %i[update destroy my_quiz]
+      before_action :authenticate_request, only: %i[update create destroy my_quizzes my_quiz submit]
+      before_action :set_quiz, only: %i[update destroy my_quiz submit]
       before_action :validate_creator, only: %i[update destroy my_quiz]
 
       def index
@@ -51,9 +51,16 @@ module Api
       def my_quiz
         render json: @quiz, serializer: Api::V1::QuizSerializer, status: :ok, current_user: @current_user
       end
-
+      def submit
+        pr = submit_params
+        
+      end
+      
       private
-
+      def submit_params
+        params.permit(answers: [:question_id, answer_ids: []])
+      end
+      
       def quiz_params
         params.require(:quiz).permit(:title, :published,
                                      questions: [:title, :question_type, { answer_choices: %i[title correct] }])
