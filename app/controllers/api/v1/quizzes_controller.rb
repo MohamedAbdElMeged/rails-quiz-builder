@@ -51,16 +51,22 @@ module Api
       def my_quiz
         render json: @quiz, serializer: Api::V1::QuizSerializer, status: :ok, current_user: @current_user
       end
+
       def submit
-        pr = submit_params
-        
+        quiz_answer = SubmitQuiz.new(@quiz, submit_params[:answers], @current_user).call
+        if quiz_answer.save
+          render json: quiz_answer, status: :ok
+        else
+          render json: quiz_answer.errors.full_messages, status: :ok
+        end
       end
-      
+
       private
+
       def submit_params
-        params.permit(answers: [:question_id, answer_ids: []])
+        params.permit(answers: [:question_id, { answer_ids: [] }])
       end
-      
+
       def quiz_params
         params.require(:quiz).permit(:title, :published,
                                      questions: [:title, :question_type, { answer_choices: %i[title correct] }])

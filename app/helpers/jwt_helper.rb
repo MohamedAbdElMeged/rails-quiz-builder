@@ -2,7 +2,7 @@
 
 module JwtHelper
   JWT_SECRET_KEY = ENV.fetch('JWT_SECRET', nil)
-  def self.encode(data, expires_in: 10.minutes)
+  def self.encode(data, expires_in: 120.minutes)
     exp = Time.now.to_i + expires_in
     payload = { data:, exp: }
     JWT.encode(payload, JWT_SECRET_KEY, 'HS256')

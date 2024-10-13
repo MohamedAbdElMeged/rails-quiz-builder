@@ -1,8 +1,13 @@
+# frozen_string_literal: true
+
 class QuizAnswer
   include Mongoid::Document
   include Mongoid::Timestamps
-  field :score, type: Float
+  field :final_score, type: Float
   field :answers, type: Array, default: []
-  embeds_one :user
+  field :user_id, type: String
+  field :user_email, type: String
   belongs_to :quiz
+
+  validates_uniqueness_of :quiz_id, scope: [:user_id]
 end
