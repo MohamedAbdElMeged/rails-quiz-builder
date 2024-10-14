@@ -6,7 +6,7 @@ module Api
       before_action :authenticate_request, only: %i[update create destroy my_quizzes my_quiz submit]
       before_action :set_quiz, only: %i[update destroy my_quiz submit]
       before_action :validate_creator, only: %i[update destroy my_quiz]
-
+      before_action :validate_published_quiz, only: [:submit]
       def index
         quizzes = Quiz.published_quizzes
         render json: quizzes, each_serializer: Api::V1::QuizSerializer, status: :ok
@@ -70,6 +70,10 @@ module Api
       def quiz_params
         params.require(:quiz).permit(:title, :published,
                                      questions: [:title, :question_type, { answer_choices: %i[title correct] }])
+      end
+
+      def validate_published_quiz
+        render json: { error: 'Quiz not published' }, status: 403 unless @quiz.published
       end
 
       def set_quiz

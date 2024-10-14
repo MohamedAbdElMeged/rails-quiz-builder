@@ -51,7 +51,7 @@ RSpec.describe Api::V1::QuizzesController, type: :request do
       end
     end
   end
-  describe 'PATCH /quizzes/id' do
+  describe 'PATCH /quizzes/:id' do
     context 'when creator and not published' do
       before do
         token = JwtHelper.encode(user.user_data)
@@ -295,6 +295,26 @@ RSpec.describe Api::V1::QuizzesController, type: :request do
 
       it "shouldn't return the quiz" do
         expect(response.status).to eq(403)
+      end
+    end
+  end
+  describe 'POST /quizzes/:id/submit' do
+    context 'when not logged in' do
+      before do
+        post "/api/v1/quizzes/#{published_quiz.id}/submit"
+      end
+      it 'should return unauthorized' do
+        expect(response.status).to eq(401)
+      end
+    end
+    context 'when logged in' do
+      context 'when not published' do
+        before do
+          post "/api/v1/quizzes/#{published_quiz.id}/submit"
+        end
+        it 'should return unauthorized' do
+          expect(response.status).to eq(401)
+        end
       end
     end
   end
