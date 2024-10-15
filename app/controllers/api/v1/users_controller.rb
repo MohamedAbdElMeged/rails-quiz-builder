@@ -17,7 +17,7 @@ module Api
       def sign_in
         user = User.find_by(email: params[:email])
 
-        unless user || user.authenticate(params[:password])
+        unless user && user.authenticate(params[:password])
           return render json: { error: 'Invalid email or password' },
                         status: :unauthorized
         end
